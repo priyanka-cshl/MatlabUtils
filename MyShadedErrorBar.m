@@ -28,6 +28,6 @@ y_values(:,find(isnan(y_values))) = [];
 
 handle.errorbar = fill(x_values,y_values,whichcolor,LineProps{:},'FaceAlpha',MyAlpha);
 hold on
-handle.mean = plot(x,y,whichcolor);
+handle.mean = plot(x,y,'color',whichcolor);
 end
 
