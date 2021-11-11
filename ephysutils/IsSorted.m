@@ -1,19 +1,8 @@
-function [Sortflag, Filepath] = IsSorted(AnimalName,varargin)
+function [Sortflag, Filepath] = IsSorted(AnimalName, whichdate, whichtime)
 
-%% parse input arguments
-defaultdate = '2021-10-06';
-defaulttimestamp = '';
-
-narginchk(1,inf)
-params = inputParser;
-params.CaseSensitive = false;
-params.addParameter('date',defaultdate,@ischar);
-params.addParameter('timestamp',defaulttimestamp,@ischar);
-
-% extract values from the inputParser
-params.parse(varargin{:});
-whichdate = params.Results.date;
-whichtime = params.Results.timestamp;
+if nargin<3
+    whichtime = [];
+end
 
 Filepath = []; Sortflag = 0;
 if isempty(whichtime)
@@ -28,7 +17,7 @@ if ~isempty(dir([Paths.Grid.Ephys_processed,filesep,AnimalName,filesep,NameStrin
     Sortflag = 1;
     Filepath = dir([Paths.Grid.Ephys_processed,filesep,AnimalName,filesep,NameString]);
 elseif ~isempty(dir([Paths.Local.Ephys_processed,filesep,AnimalName,filesep,NameString])) % on the local drive
-    Sortflag = 1;
+    Sortflag = 2;
     Filepath = dir([Paths.Local.Ephys_processed,filesep,AnimalName,filesep,NameString]);
 end
 
