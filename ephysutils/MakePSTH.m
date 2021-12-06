@@ -31,10 +31,9 @@ for i = 1:size(Spiketimes,1)
 	thisTrialSpikes = floor(1000*thisTrialSpikes);
 
 	% Make raster
-	for t = 1:numel(timeBins)
-		myRaster(i,t) = numel(find(thisTrialSpikes==timeBins(t)));
-    end
-
+    [C,~,ic] = unique(thisTrialSpikes);
+    bin_counts = accumarray(ic,1);
+    myRaster(i,C) = bin_counts;
 end
 
 % Make PSTH (raw)
@@ -45,7 +44,11 @@ taxis = -500:500;  % make a time axis of 1000 ms
 gauss_kernel = normpdf(taxis, 0, kernelsize);
 gauss_kernel = gauss_kernel ./ sum(gauss_kernel);
 
-myFR = 1000*conv(myPSTH,gauss_kernel,'same'); % in Hz
+if kernelsize
+    myFR = 1000*conv(myPSTH,gauss_kernel,'same'); % in Hz
+else
+    myFR = myPSTH;
+end
 
 if downsample ~= 1000
     taxis = (1000/downsample):(1000/downsample):numel(myFR);
