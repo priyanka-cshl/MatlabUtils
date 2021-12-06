@@ -13,10 +13,12 @@ Paths.Local.Ephys_processed     = '/mnt/data/Sorted'; % local copy where sorted,
 Paths.Grid.Ephys_processed      = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Ephys'; % local copy where sorted, curated spike data is stored
 Paths.Local.Behavior_processed  = '/mnt/data/Behavior'; % local copy where sorted, curated spike data is stored
 Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Behavior'; % local copy where sorted, curated spike data is stored
-
+Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
 switch computername
     case 'andaman'
         % use defaults
+    case 'nicobar'
+        Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
 end
 
 end
