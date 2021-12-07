@@ -16,7 +16,7 @@ Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/B
 Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
 switch computername
     case 'andaman'
-        % use defaults
+        Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
     case 'nicobar'
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
 end
