@@ -17,6 +17,20 @@ switch string
         rgb=[0 139 139]./256;
     case 'p'%pink
         rgb=[199 21 133]./256;
+    case 'k'
+        rgb = [0 0 0];
+    case 'Odor1'
+        rgb = [.8 .8 .8];
+    case 'Odor2'
+        rgb = [0.8941    0.9412    0.9020];
+    case 'Odor3'
+        rgb = [0.8706    0.9216    0.9804];
+    case 'Odor4'
+        rgb = [0.93    0.84    0.84];
+    case 'TZ'
+        rgb = [1 1 0];
+   
+        
 end
 
 
