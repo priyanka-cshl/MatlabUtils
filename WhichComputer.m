@@ -20,5 +20,4 @@ switch computername
     case 'nicobar'
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
 end
-
 end
