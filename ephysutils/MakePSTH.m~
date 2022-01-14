@@ -29,17 +29,13 @@ for i = 1:size(Spiketimes,1)
 	thisTrialSpikes = Spiketimes(i,:) - EventsToAlign(i);
 	% convert spike times to milliseconds and floor values
 	thisTrialSpikes = floor(1000*thisTrialSpikes);
-    % remove NaNs
-    thisTrialSpikes(isnan(thisTrialSpikes)) = [];
+
 	% Make raster
     [C,~,ic] = unique(thisTrialSpikes);
     bin_counts = accumarray(ic,1);
-    if ~isempty(C)
-        % ignore any -ve time bins
-        bin_counts((C<=0),:) = [];
-        C(C<=0) = [];
-        myRaster(i,C) = bin_counts;
-    end
+    % ignore any -ve time bins
+    bin_counts()
+    myRaster(i,C) = bin_counts;    
 end
 % Make PSTH (raw)
 myPSTH = sum(myRaster,1);
