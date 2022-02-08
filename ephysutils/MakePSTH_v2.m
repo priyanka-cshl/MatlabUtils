@@ -24,7 +24,9 @@ for i = 1:size(Spiketimes,1)
 	% align to the specified event
 	thisTrialSpikes = Spiketimes(i,:) - EventsToAlign(i);
 	% convert spike times to milliseconds and floor values
-	thisTrialSpikes = ceil(1000*thisTrialSpikes/binsize);
+	thisTrialSpikes = floor(1000*thisTrialSpikes);
+    % divide by binsize to figure out which bin they should belong to
+    thisTrialSpikes = ceil(thisTrialSpikes/binsize);
     % remove NaNs
     thisTrialSpikes(isnan(thisTrialSpikes)) = [];
 	% Make raster
@@ -43,7 +45,11 @@ myPSTH = sum(myRaster,1);
 
 % Smoothen PSTH
 taxis = -500:500;  % make a time axis of 1000 ms
-gauss_kernel = normpdf(taxis, 0, kernelsize/binsize);
+gauss_kernel = normpdf(taxis, 0, kernelsize);
+gauss_kernel = gauss_kernel ./ sum(gauss_kernel);
+
+taxis = -500:binsize:500;  % make a time axis of 1000 ms
+gauss_kernel = normpdf(taxis, 0, kernelsize);
 gauss_kernel = gauss_kernel ./ sum(gauss_kernel);
 
 if kernelsize > 1
