@@ -22,9 +22,13 @@ savefigs = params.Results.savefigures;
 global MyFileName;
 
 % Initialize raster
-timeBins = windowsize(1):windowsize(2);
-myRaster = zeros(size(Spiketimes,1),numel(timeBins));
-myFR 	 = zeros(1,numel(timeBins));
+if ~isempty(windowsize)
+    timeBins = windowsize(1):windowsize(2);
+    myRaster = zeros(size(Spiketimes,1),numel(timeBins));
+    myFR 	 = zeros(1,numel(timeBins));
+else
+    myRaster = 0;
+end
 
 for i = 1:size(Spiketimes,1) 
 	% align to the specified event
