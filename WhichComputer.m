@@ -16,8 +16,13 @@ Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/B
 Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
 switch computername
     case 'andaman'
+        Paths.Grid.Behavior      = '/mnt/data/BehaviorRaw'; % raw behavior, tuning mtalab files
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
+        Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
     case 'nicobar'
+        Paths.Grid.Behavior      = '/mnt/data/BehaviorRaw'; % raw behavior, tuning mtalab files
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
+        Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
+        Paths.Grid.Ephys{1}             = '/mnt/data/Sorted';
 end
 end
