@@ -24,6 +24,15 @@ switch computername
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
         Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
         Paths.Grid.Ephys{1}             = '/mnt/data/Sorted';
+    case 'DESKTOP-A6NSB2F' %Marie remote
+        Paths.Code                      = 'C:\Users\Marie\Documents\Code'; % where all code files are
+        Paths.Grid.Behavior             = 'Z:\pgupta\Behavior'; % raw behavior, tuning mtalab files
+        Paths.Grid.Ephys{1}             = 'Z:\pgupta\EphysData'; % raw oeps files - for PCX batch
+        Paths.Grid.Ephys{2}             = 'Z:\mdussauz\ephysdata\lever_task\Batch'; % raw oeps files - for batch O,MO, J
+        Paths.Local.Ephys_processed     = 'C:\Users\Marie\Documents\data\Sorted'; % local copy where sorted, curated spike data is stored
+        Paths.Grid.Ephys_processed      = 'Z:\mdussauz\Smellocator\Processed\Ephys'; % local copy where sorted, curated spike data is stored
+        Paths.Local.Behavior_processed  = 'C:\Users\Marie\Documents\data\Behavior'; % local copy where sorted, curated spike data is stored
+        Paths.Grid.Behavior_processed   = 'Z:\mdussauz\Smellocator\Processed\Behavior'; % local copy where sorted, curated spike data is stored
 end
 
 % LocationMapping Experiments done by Blom on AON mice
