@@ -25,4 +25,10 @@ switch computername
         Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
         Paths.Grid.Ephys{1}             = '/mnt/data/Sorted';
 end
+
+% LocationMapping Experiments done by Blom on AON mice
+Paths.Mapping.EphysRaw = '/mnt/grid-hs/pgupta/EphysData/odor_location';
+Paths.Mapping.EphysSorted = '/mnt/grid-hs/pgupta/EphysData/odor_location/Sorted';
+Paths.Mapping.StimulusFile = '/mnt/grid-hs/pgupta/Behavior';
+Paths.Mapping.Processed = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Mapping';
 end
