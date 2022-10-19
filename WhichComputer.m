@@ -14,6 +14,13 @@ Paths.Grid.Ephys_processed      = '/mnt/grid-hs/mdussauz/Smellocator/Processed/E
 Paths.Local.Behavior_processed  = '/mnt/data/Behavior'; % local copy where sorted, curated spike data is stored
 Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Behavior'; % local copy where sorted, curated spike data is stored
 Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
+
+% LocationMapping Experiments done by Blom on AON mice
+Paths.Mapping.EphysRaw = '/mnt/grid-hs/pgupta/EphysData/odor_location';
+Paths.Mapping.EphysSorted = '/mnt/grid-hs/pgupta/EphysData/odor_location/Sorted';
+Paths.Mapping.StimulusFile = '/mnt/grid-hs/pgupta/Behavior';
+Paths.Mapping.Processed = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Mapping';
+
 switch computername
     case 'andaman'
         %Paths.Grid.Behavior      = '/mnt/data/BehaviorRaw'; % raw behavior, tuning mtalab files
@@ -33,11 +40,13 @@ switch computername
         Paths.Grid.Ephys_processed      = 'Z:\mdussauz\Smellocator\Processed\Ephys'; % local copy where sorted, curated spike data is stored
         Paths.Local.Behavior_processed  = 'C:\Users\Marie\Documents\data\Behavior'; % local copy where sorted, curated spike data is stored
         Paths.Grid.Behavior_processed   = 'Z:\mdussauz\Smellocator\Processed\Behavior'; % local copy where sorted, curated spike data is stored
+        
+        % LocationMapping Experiments done by Blom on AON mice
+        Paths.Mapping.EphysRaw = 'Z:\pgupta\EphysData\odor_location';
+        Paths.Mapping.EphysSorted = 'Z:\pgupta\EphysData\odor_location\Sorted';
+        Paths.Mapping.StimulusFile = 'Z:\pgupta\Behavior';
+        Paths.Mapping.Processed = 'Z:\mdussauz\Smellocator\Processed\Mapping';
 end
 
-% LocationMapping Experiments done by Blom on AON mice
-Paths.Mapping.EphysRaw = '/mnt/grid-hs/pgupta/EphysData/odor_location';
-Paths.Mapping.EphysSorted = '/mnt/grid-hs/pgupta/EphysData/odor_location/Sorted';
-Paths.Mapping.StimulusFile = '/mnt/grid-hs/pgupta/Behavior';
-Paths.Mapping.Processed = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Mapping';
+
 end
