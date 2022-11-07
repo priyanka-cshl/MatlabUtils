@@ -4,6 +4,10 @@ function [Paths] = WhichComputer()
 [~,computername] = system('hostname');
 computername = deblank(computername);
 
+if regexp(computername,'.cshl.edu')
+    computername = 'MacLocal'
+end
+
 % default paths
 Paths.Code                      = '/opt'; % where all code files are
 Paths.Grid.Behavior             = '/mnt/grid-hs/pgupta/Behavior'; % raw behavior, tuning mtalab files
@@ -24,5 +28,18 @@ switch computername
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
         Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
         Paths.Grid.Ephys{1}             = '/mnt/data/Sorted';
+    case 'MacLocal'
+        Paths.Grid.Behavior      = '/Users/Priyanka/Desktop/LABWORK_II/Data/Behavior'; % raw behavior, tuning mtalab files
+        Paths.ProcessedSessions  = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Behavior';
+        Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
+        Paths.Grid.Ephys{1}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys';
+        Paths.Grid.Ephys{2}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys/Batch';
+    case 'breadstick.cshl.edu'
+        Paths.Grid.Behavior      = '/Users/Priyanka/Desktop/LABWORK_II/Data/Behavior'; % raw behavior, tuning mtalab files
+        Paths.ProcessedSessions  = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Behavior';
+        Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
+        Paths.Grid.Ephys{1}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys';
+        Paths.Grid.Ephys{2}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys/Batch';
+    
 end
 end
