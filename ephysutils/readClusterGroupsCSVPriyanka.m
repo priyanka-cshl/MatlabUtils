@@ -30,9 +30,12 @@ cgs(isUns) = 3;
 fid = fopen(regexprep(filename,'_group','_info'));
 
 
-formatSpec = '%s';
-N = 8;
-headers = textscan(fid,formatSpec,N);
+
+% N = 8;
+% N = numel(regexp(headers,'\t'))+1; % no. of columns
+headers = fgetl(fid);
+%formatSpec = '%s';
+%headers = textscan(fid,formatSpec,N);
 
 foo = textscan(fid,'%f %f %f %*[^\n]');
 wires = [cell2mat(foo(1)) cell2mat(foo(3))];
