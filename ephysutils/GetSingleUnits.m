@@ -47,7 +47,8 @@ for mycluster = 1:length(sp.cids) % for each cluster
     allspikes = sp.st(sp.clu==sp.cids(mycluster));
     
     % which tetrode
-    tetrode = floor(sp.channels(mycluster)/4)+1;
+    tetrode = floor(sp.channels(mycluster)/4)+1 + ...
+        rem(sp.channels(mycluster)-1 ,4)/10;
     
     % Outputs
     cluster(mycluster).id = sp.cids(mycluster);
