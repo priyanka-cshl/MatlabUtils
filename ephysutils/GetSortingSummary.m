@@ -1,4 +1,4 @@
-function [] = GetSortingSummary(myKsDir)
+function [Cluster, Spikes] = GetSortingSummary(myKsDir)
 % function to load spike times, waveforms etc after spike sorting
 % manual curation in phy
 
@@ -28,9 +28,11 @@ for mycluster = 1:length(sp.cids) % for each cluster
     allspikes = sp.st(sp.clu==sp.cids(mycluster));
     
     % which tetrode
-    tetrode = floor(sp.channels(mycluster)/4)+1;
+    tetrode = floor(sp.channels(mycluster)/4)+1 + ...
+        rem(sp.channels(mycluster) ,4)/10;
     
     % Outputs
+    Spikes{mycluster} = allspikes;
     Cluster(mycluster,1) = sp.cids(mycluster); % id
     Cluster(mycluster,2) = tetrode; % tetrode
     Cluster(mycluster,3) = sp.cgs(mycluster); % quality
@@ -40,8 +42,9 @@ for mycluster = 1:length(sp.cids) % for each cluster
 end
 
 % Sort by tetrode
-Cluster = sortrows(Cluster,[2 3]);
-[~,y] = unique(Cluster(:,2)); % get starting index for each tt
+[Cluster, sortorder] = sortrows(Cluster,2);
+Spikes = Spikes(sortorder);
+[~,y] = unique(floor(Cluster(:,2))); % get starting index for each tt
 % units per tetrode
 perTT = diff([y; 1+size(Cluster,1)]);
 
