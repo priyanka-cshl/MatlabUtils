@@ -38,7 +38,7 @@ for mycluster = 1:length(sp.cids) % for each cluster
     Cluster(mycluster,3) = sp.cgs(mycluster); % quality
     [fpRate, numViolations] = ISIViolations(allspikes, 1/32000, 0.002);
     Cluster(mycluster,4:5) = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')]; %  ISIquality
-
+    Cluster(mycluster,6) = sp.amp(mycluster); % spike amplitude
 end
 
 % Sort by tetrode

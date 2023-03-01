@@ -66,7 +66,11 @@ if ~isempty(cgsFile)
         cids = cids(~ismember(cids, noiseClusters));
         [~,channels] = ismember(cids, wires(:,1));
         channels = wires(channels,2);
-        
+        if size(channels,2)>2
+            amps = wires(channels,3);
+        else
+            amps = 0*cgs;
+        end
     end
     
 else
@@ -98,3 +102,4 @@ spikeStruct.temps = temps;
 spikeStruct.winv = winv;
 spikeStruct.pcFeat = pcFeat;
 spikeStruct.pcFeatInd = pcFeatInd;
+spikeStruct.amp = amps;
