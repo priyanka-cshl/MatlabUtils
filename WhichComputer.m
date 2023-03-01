@@ -4,8 +4,8 @@ function [Paths] = WhichComputer()
 [~,computername] = system('hostname');
 computername = deblank(computername);
 
-if regexp(computername,'.cshl.edu')
-    computername = 'MacLocal'
+if contains(computername,'.cshl.edu') || contains(computername, 'priyanka-gupta')
+    computername = 'MacLocal';
 end
 
 % default paths
@@ -15,9 +15,9 @@ Paths.Grid.Ephys{1}             = '/mnt/grid-hs/pgupta/EphysData'; % raw oeps fi
 Paths.Grid.Ephys{2}             = '/mnt/grid-hs/mdussauz/ephysdata/lever_task/Batch'; % raw oeps files - for batch O,MO, J
 Paths.Grid.Ephys{3}             = '/mnt/albeanu_lab/priyanka/EphysData'; % batch Q
 Paths.Local.Ephys_processed     = '/mnt/data/Sorted'; % local copy where sorted, curated spike data is stored
-Paths.Grid.Ephys_processed      = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Ephys'; % local copy where sorted, curated spike data is stored
-Paths.Local.Behavior_processed  = '/mnt/data/Behavior'; % local copy where sorted, curated spike data is stored
-Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Behavior'; % local copy where sorted, curated spike data is stored
+Paths.Grid.Ephys_processed      = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Ephys'; % server copy where sorted, curated spike data is stored
+Paths.Local.Behavior_processed  = '/mnt/data/Behavior'; % local copy where combined behavior and ephys preprocessed data is stored
+Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Behavior'; % local copy where combined behavior and ephys preprocessed data is stored
 Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
 
 % LocationMapping Experiments done by Blom on AON mice
@@ -36,18 +36,16 @@ switch computername
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
         Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
         Paths.Grid.Ephys{1}             = '/mnt/data/Sorted';
-    case 'MacLocal'
-        Paths.Grid.Behavior      = '/Users/Priyanka/Desktop/LABWORK_II/Data/Behavior'; % raw behavior, tuning mtalab files
-        Paths.ProcessedSessions  = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Behavior';
-        Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
+    case 'MacLocal' % Priyanka laptop
+        Paths.Code                      = '/Users/Priyanka/Desktop/github_local';
+        Paths.Grid.Behavior             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Behavior'; % raw behavior, tuning mtalab files
+        Paths.ProcessedSessions         = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Behavior';
+        Paths.Grid.Behavior_processed   = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Behavior';
         Paths.Grid.Ephys{1}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys';
         Paths.Grid.Ephys{2}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys/Batch';
-    case 'breadstick.cshl.edu'
-        Paths.Grid.Behavior      = '/Users/Priyanka/Desktop/LABWORK_II/Data/Behavior'; % raw behavior, tuning mtalab files
-        Paths.ProcessedSessions  = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Behavior';
-        Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
-        Paths.Grid.Ephys{1}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys';
-        Paths.Grid.Ephys{2}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys/Batch';
+        Paths.Grid.Ephys{3}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys';
+        Paths.Local.Ephys_processed     = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Ephys';
+        Paths.Grid.Ephys_processed      = Paths.Local.Ephys_processed;
     case 'DESKTOP-A6NSB2F' %Marie remote
         Paths.Code                      = 'C:\Users\Marie\Documents\Code'; % where all code files are
         Paths.Grid.Behavior             = 'Z:\pgupta\Behavior'; % raw behavior, tuning mtalab files
