@@ -48,7 +48,7 @@ for mycluster = 1:length(sp.cids) % for each cluster
     
     % which tetrode
     tetrode = floor(sp.channels(mycluster)/4)+1 + ...
-        rem(sp.channels(mycluster)-1 ,4)/10;
+        rem(sp.channels(mycluster),4)/10;
     
     % Outputs
     cluster(mycluster).id = sp.cids(mycluster);
@@ -58,6 +58,10 @@ for mycluster = 1:length(sp.cids) % for each cluster
     cluster(mycluster).quality = sp.cgs(mycluster);
     [fpRate, numViolations] = ISIViolations(allspikes, 1/32000, 0.002);
     cluster(mycluster).ISIquality = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')];
+    if mycluster == 1
+            cluster.spikescaling = sp.tempScalingAmps;
+            cluster.clusterscalingorder = sp.clu;
+    end
     
     if getwaveforms
         
