@@ -42,7 +42,7 @@ sp = loadKSdirPriyanka(myKsDir);
 
 % align to trial off of the previous trial
 %for mycluster = 1:length(sp.cids) % for each cluster
-    mycluster = 10;
+    mycluster = whichunit;
     % get all spiketimes (in seconds)
     allspikes = sp.st(sp.clu==sp.cids(mycluster));
     
@@ -59,7 +59,7 @@ sp = loadKSdirPriyanka(myKsDir);
     [fpRate, numViolations] = ISIViolations(allspikes, 1/32000, 0.002);
     cluster(mycluster).ISIquality = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')];
     cluster(mycluster).spikescaling = sp.tempScalingAmps;
-    cluster(mycluster).clusterscalingorder = sp.clu;
+    cluster(mycluster).clusterscalingorder = sp.clu;    
     
     if getwaveforms
         
@@ -87,7 +87,7 @@ sp = loadKSdirPriyanka(myKsDir);
     for chunk = 1:3
         whichspikes = intersect(find(wf.spikeTimeKeeps<=1500*chunk),find(wf.spikeTimeKeeps>=1500*(chunk-1)));
         for ch = 1:4
-            subplot(3,4,ch+(chunk-1)*4);            
+            subplot(4,4,ch+(chunk-1)*4);            
             meanWF = mean(squeeze(wf.waveForms(1,whichspikes,whichchannels(ch),:)),1);
             stdWF = nanstd(squeeze(wf.waveForms(1,whichspikes,whichchannels(ch),:)),1);
             plot(meanWF,'k');
@@ -98,10 +98,16 @@ sp = loadKSdirPriyanka(myKsDir);
             plot(meanWF+semWF,'r');
             plot(meanWF-semWF,'r');
             %MyShadedErrorBar(1:length(meanWF),meanWF,stdWF,'r');
+            set(gca,'YLim',[-600 250],'XLim',[0 83],'TickDir','out');
         end
     end
-
-    
+    subplot(4,4,[13:16]); % amplitude plot
+    thisunitamps = cluster(mycluster).spikescaling(find(cluster(mycluster).clusterscalingorder == sp.cids(mycluster)));
+    plot(allspikes,thisunitamps,'.');
+    set(gca,'YLim',[0 40],'TickDir','out');
+%     session_end = handles.TrialInfo.SessionTimestamps(end,2) + handles.TimestampAdjuster;
+%     line([session_end session_end],get(gca,'YLim'),'Color','k');
+%     hold off
     
 %end
 
