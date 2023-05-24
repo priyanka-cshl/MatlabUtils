@@ -56,7 +56,7 @@ for mycluster = 1:length(sp.cids) % for each cluster
     cluster(mycluster).spikecount = numel(allspikes);
     cluster(mycluster).spikes = allspikes;
     cluster(mycluster).quality = sp.cgs(mycluster);
-    [fpRate, numViolations] = ISIViolations(allspikes, 1/32000, 0.002);
+    [fpRate, numViolations] = ISIViolations(allspikes, 1/30000, 0.002);
     cluster(mycluster).ISIquality = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')];
     if mycluster == 1
             cluster.spikescaling = sp.tempScalingAmps;
