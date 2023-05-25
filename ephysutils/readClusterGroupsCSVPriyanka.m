@@ -32,9 +32,14 @@ fid = fopen(regexprep(filename,'_group','_info'));
 headers = strsplit(fgetl(fid));
 % foo = strsplit(headers);
 % token = [repmat('%f ',1,numel(foo)),'%*[^\n]'];
-
-for i = 1:numel(cids)
-    attributes = strsplit(fgetl(fid));
+i = 0;
+while 1
+    try
+        attributes = strsplit(fgetl(fid));
+        i = i + 1;
+    catch
+        return;
+    end
         
     wires(i,1:4) = [str2double(attributes{find(cellfun(@(x) strcmp(x,'cluster_id'), headers))}) ...
         str2double(attributes{find(cellfun(@(x) strcmp(x,'ch'), headers))}) ...
