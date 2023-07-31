@@ -1,8 +1,8 @@
 %function [] = MatchUnits()
 
 % which sessions to compare
-myKsDir{1} = '/mnt/data/Sorted/Q8/2003-12-04_22-40-13';
-myKsDir{2} = '/mnt/data/Sorted/Q8/2002-12-04_22-40-13';
+myKsDir{1} = '/mnt/data/Sorted/Q5/2022-11-22_16-21-07_filt_CAR';
+myKsDir{2} = '/mnt/data/Sorted/Q5/2022-11-22_16-21-07';
 
 % get units and their attributes
 %[Sessions] = GetSingleUnits_forMatching(myKsDir);
@@ -11,7 +11,74 @@ myKsDir{2} = '/mnt/data/Sorted/Q8/2002-12-04_22-40-13';
 
 MatchedUnits = [];
 count = 0;
+
+for TTs = 1:10
+    channels = (TTs-1)*4 + (0:1:3);
+    
+    %1. find all units on this tetrodes
+    RefUnits = find(ismember(Sessions.Session1.UnitAttributes(:,2),channels));
+    
+    if ~isempty(RefUnits)
+        %2. get waveforms
+        RefWaveforms = Sessions.Session1.MeanWaveForms(RefUnits,:)';
+        
+        %3. find all units on the other session on this particular tetrode
+            % and get waveforms
+        whichUnits = find(ismember(Sessions.Session2.UnitAttributes(:,2),channels));
+        MatchWaveforms = Sessions.Session2.MeanWaveForms(whichUnits,:)';
+        
+        %4. get correlations
+        %4a. between Waveforms 
+        WV = [RefWaveforms MatchWaveforms];
+        R1 = corrcoef(WV);
+        
+        %4b. between ISI dists 
+        R2 = corrcoef( [Sessions.Session1.distISI(RefUnits,:)' ...
+                Sessions.Session2.distISI(whichUnits,:)']);
+            
+        %4c. and correlograms
+        R3 = corrcoef( [Sessions.Session1.Correlogram(RefUnits,:)' ...
+                Sessions.Session2.Correlogram(whichUnits,:)']);
+        
+        clear Matches
+        for i = 1:numel(RefUnits)
+            % sort the units on session 2 by correlation with mean waveforms
+            myCorrs     = R1((numel(RefUnits)+1):end,i);
+            myRMS       = sqrt(mean((MatchWaveforms - RefWaveforms(:,i)).^2))';
+            ISIcorrs    = R2((numel(RefUnits)+1):end,i);
+            CGMcorrs    = R3((numel(RefUnits)+1):end,i);
+            
+            [~,BestMatches] = sortrows(...
+                [(1-myCorrs).*myRMS 1-CGMcorrs 1-ISIcorrs],...
+                [1 2 3],'ascend');
+            
+            Matches(:,:,i) = [BestMatches myCorrs(BestMatches) ...
+                myRMS(BestMatches) ISIcorrs(BestMatches) CGMcorrs(BestMatches)];
+        
+        % get a unique match
+        for i = 1:numel(RefUnits)
+            % does the best match have waveform correlation higher 0.9?
+            if Matches(1,2,i)>=0.9
+                % any competition?
+                foo = find(squeeze(Matches(1,1,i+1:end))==Matches(1,1,i)) + 1;
+                % does the second best match also have a high correlation
+                if Matches(2,2,i)>=0.9
+                else
+                    % very likely the current best match is a good match
+                end
+            end
+        end
+        
+    end
+
+end
+
+
+
 figure;
+
+
+
 for channels = 1:40
     % find matches: lets go tetrode by  tetrode
     whichChannel = channels-1; % 0 indexed

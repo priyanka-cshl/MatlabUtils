@@ -19,6 +19,8 @@ Paths.Grid.Ephys_processed      = '/mnt/grid-hs/mdussauz/Smellocator/Processed/E
 Paths.Local.Behavior_processed  = '/mnt/data/Behavior'; % local copy where combined behavior and ephys preprocessed data is stored
 Paths.Grid.Behavior_processed   = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Behavior'; % local copy where combined behavior and ephys preprocessed data is stored
 Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
+Paths.Widefield.Raw             = '/mnt/albeanu_lab/priyanka/Widefield';
+Paths.Widefield.Processed       = '/mnt/data/Widefield'; % local copy on Andaman
 
 % LocationMapping Experiments done by Blom on AON mice
 Paths.Mapping.EphysRaw = '/mnt/grid-hs/pgupta/EphysData/odor_location';
