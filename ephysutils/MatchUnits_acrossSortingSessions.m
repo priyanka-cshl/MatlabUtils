@@ -1,11 +1,11 @@
 %function [] = MatchUnits_acrossSortingSessions()
 
-% which sessions to compare
-myKsDir{1} = '/mnt/data/Sorted/Q88/2022-12-07_16-57-14';
-myKsDir{2} = '/mnt/data/Sorted/Q88/2021-12-07_16-57-14';
-
-% get units and their attributes
-%[Sessions] = GetSingleUnits_forMatching(myKsDir);
+% % which sessions to compare
+% myKsDir{1} = '/mnt/data/Sorted/Q88/2022-12-07_16-57-14';
+% myKsDir{2} = '/mnt/data/Sorted/Q88/2021-12-07_16-57-14';
+% 
+% % get units and their attributes
+% %[Sessions] = GetSingleUnits_forMatching(myKsDir);
 
 %Attributes: [cluster_ID ch tetrode amp fr fractionRPV ISIViolations n_spikes]
 
@@ -50,6 +50,10 @@ for TTs = 1:10
         R3 = corrcoef( [Sessions.Session1.Correlogram(RefUnits,:)' ...
             Sessions.Session2.Correlogram(whichUnits,:)']);
         
+        if TTs == 6
+            keyboard;
+        end
+        
         clear Matches
         for i = 1:numel(RefUnits)
             % sort the units on session 2 by correlation with mean waveforms
@@ -61,9 +65,11 @@ for TTs = 1:10
             % set a threshold for waveform similarity
             ignoreflag = ones(numel(WVCorrs),1);
             ignoreflag(WVCorrs<0.85) = 0;
-            temp = WVCorrs + CGMcorrs + ISIcorrs;
+            temp = mean([WVCorrs CGMcorrs ISIcorrs],2,'omitnan');
             temp(isnan(temp)) = -1;
             [~,BestMatches] = sortrows([temp.*ignoreflag Corrs],[1 2], 'descend');
+            %[~,BestMatches] = sortrows([temp.*ignoreflag.*Corrs Corrs],[1 2], 'descend');
+            %[~,BestMatches] = sortrows([ignoreflag.*Corrs temp],[1 2], 'descend');
             
             ignoreflag(find(~ignoreflag)) = NaN;
             Matches(:,:,i) = [BestMatches.*ignoreflag(BestMatches) Corrs(BestMatches) WVCorrs(BestMatches) ...
@@ -73,18 +79,18 @@ for TTs = 1:10
         % some curation steps
         foo = squeeze(Matches(1,1,:));
         foo(isnan(foo),:) = [];
-        if numel(foo) == numel(unique(foo))
-            % we are all set
-            for i = 1:numel(RefUnits)
-                x = Sessions.Session1.UnitAttributes(RefUnits(i),1);
-                if ~isnan(Matches(1,1,i))
-                    y = Sessions.Session2.UnitAttributes(whichUnits(Matches(1,1,i)),1);
-                else
-                    y = NaN;
-                end
-                MatchedUnits = vertcat(MatchedUnits, [x y]);
-            end
-        else
+        if numel(foo) ~= numel(unique(foo))
+%             % we are all set
+%             for i = 1:numel(RefUnits)
+%                 x = Sessions.Session1.UnitAttributes(RefUnits(i),1);
+%                 if ~isnan(Matches(1,1,i))
+%                     y = Sessions.Session2.UnitAttributes(whichUnits(Matches(1,1,i)),1);
+%                 else
+%                     y = NaN;
+%                 end
+%                 MatchedUnits = vertcat(MatchedUnits, [x y]);
+%             end
+%         else
             [C,ia,ic] = unique(squeeze(Matches(1,1,:)));
             a_counts = accumarray(ic,1);
             value_counts = [C, a_counts];
@@ -112,23 +118,53 @@ for TTs = 1:10
                     a_counts = accumarray(ic,1);
                     value_counts = [C, a_counts];
                     value_counts(isnan(value_counts(:,1)),:) = [];
+                elseif any(~ismember(1:numel(unit_idx),match))
+                    % find the one that clearly doesn't fit
+                    k = unit_idx(find(~ismember(1:numel(unit_idx),match)));
+                    % nullify the top-match
+                    Matches(1,1,k) = NaN;
+                    Matches(:,:,k) = squeeze(circshift(Matches(:,:,k),-1,1));
+                    [C,ia,ic] = unique(squeeze(Matches(1,1,:)));
+                    a_counts = accumarray(ic,1);
+                    value_counts = [C, a_counts];
+                    value_counts(isnan(value_counts(:,1)),:) = [];
+                elseif numel(find(match==mode(match)))==2
+                    % any majority at all?
+                    unit_idx(mode(match)) = [];
+                    for j = 1:numel(unit_idx)
+                        % nullify the top-match
+                        % Matches(1,1,unit_idx(j)) = NaN;
+                        % keep the top match in case no better candidate is
+                        % actually found
+                        Matches(1,1,unit_idx(j)) = -Matches(1,1,unit_idx(j));
+                        Matches(:,:,unit_idx) = squeeze(circshift(Matches(:,:,unit_idx),-1,1));
+                    end
+                    [C,ia,ic] = unique(squeeze(Matches(1,1,:)));
+                    a_counts = accumarray(ic,1);
+                    value_counts = [C, a_counts];
+                    value_counts(isnan(value_counts(:,1)),:) = [];
                 else
                     keyboard;
                 end
                 
             end
-            
-            for i = 1:numel(RefUnits)
-                x = Sessions.Session1.UnitAttributes(RefUnits(i),1);
-                if ~isnan(Matches(1,1,i))
-                    y = Sessions.Session2.UnitAttributes(whichUnits(Matches(1,1,i)),1);
-                else
-                    y = NaN;
-                end
-                MatchedUnits = vertcat(MatchedUnits, [x y]);
-            end
-            
         end
+        
+        thisTTMatch = ones(numel(RefUnits),3);
+        thisTTMatch(:,3) = thisTTMatch(:,3)*TTs;
+        for i = 1:numel(RefUnits)
+            thisTTMatch(i,1) = Sessions.Session1.UnitAttributes(RefUnits(i),1);
+            if ~isnan(Matches(1,1,i))
+                thisTTMatch(i,2) = Sessions.Session2.UnitAttributes(whichUnits(Matches(1,1,i)),1);
+            else
+                thisTTMatch(i,2) = NaN;
+            end
+        end
+        MatchedUnits = vertcat(MatchedUnits, thisTTMatch);
+        
+        
+            
+        %end
         
         
     end
