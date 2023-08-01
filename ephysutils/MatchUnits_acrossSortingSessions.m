@@ -1,8 +1,8 @@
 %function [] = MatchUnits_acrossSortingSessions()
 
 % which sessions to compare
-myKsDir{1} = '/mnt/data/Sorted/Q5/2022-11-22_16-21-07_filt_CAR';
-myKsDir{2} = '/mnt/data/Sorted/Q5/2022-11-22_16-21-07';
+myKsDir{1} = '/mnt/data/Sorted/Q88/2022-12-07_16-57-14';
+myKsDir{2} = '/mnt/data/Sorted/Q88/2021-12-07_16-57-14';
 
 % get units and their attributes
 %[Sessions] = GetSingleUnits_forMatching(myKsDir);
@@ -58,51 +58,79 @@ for TTs = 1:10
             ISIcorrs    = R2((numel(RefUnits)+1):end,i);
             CGMcorrs    = R3((numel(RefUnits)+1):end,i);
             
-            [~,BestMatches] = sortrows([Corrs WVCorrs CGMcorrs ISIcorrs],'descend');
+            % set a threshold for waveform similarity
+            ignoreflag = ones(numel(WVCorrs),1);
+            ignoreflag(WVCorrs<0.85) = 0;
+            temp = WVCorrs + CGMcorrs + ISIcorrs;
+            temp(isnan(temp)) = -1;
+            [~,BestMatches] = sortrows([temp.*ignoreflag Corrs],[1 2], 'descend');
             
-            Matches(:,:,i) = [BestMatches Corrs(BestMatches) WVCorrs(BestMatches) ...
+            ignoreflag(find(~ignoreflag)) = NaN;
+            Matches(:,:,i) = [BestMatches.*ignoreflag(BestMatches) Corrs(BestMatches) WVCorrs(BestMatches) ...
                 ISIcorrs(BestMatches) CGMcorrs(BestMatches)];
         end
         
-        % get a unique match
-        if numel(RefUnits)>=numel(whichUnits)
-            if numel(unique(squeeze(Matches(1,1,:)))) == numel(whichUnits)
-                MatchedUnits = vertcat(MatchedUnits, ...
-                    [Sessions.Session1.UnitAttributes(RefUnits,1) Sessions.Session2.UnitAttributes(whichUnits(squeeze(Matches(1,1,:))),1)]);
-            else
-                keyboard;
-                for i = 1:numel(RefUnits)
-                    % does the best match have waveform correlation higher 0.9?
-                    if Matches(1,2,i)>=0.9
-                        % any competition?
-                        foo = find(squeeze(Matches(1,1,i+1:end))==Matches(1,1,i)) + 1;
-                        % does the second best match also have a high correlation
-                        if Matches(2,2,i)>=0.9
-                        else
-                            % very likely the current best match is a good match
-                        end
-                    end
-                end
-            end
-        elseif numel(unique(squeeze(Matches(1,1,:)))) == numel(RefUnits)
-            MatchedUnits = vertcat(MatchedUnits, ...
-                    [Sessions.Session1.UnitAttributes(RefUnits,1) Sessions.Session2.UnitAttributes(whichUnits(squeeze(Matches(1,1,:))),1)]);
-        else % RefUnits < whichUnits and duplicates 
-            keyboard;
-            unitOK = zeros(numel(RefUnits),1);
-            FirstMatch = squeeze(Matches(1,1,:));
+        % some curation steps
+        foo = squeeze(Matches(1,1,:));
+        foo(isnan(foo),:) = [];
+        if numel(foo) == numel(unique(foo))
+            % we are all set
             for i = 1:numel(RefUnits)
-                if numel(find(FirstMatch==FirstMatch(i)))>1
-                    % duplicates
-                    comatched = find(FirstMatch==FirstMatch(i));
-                    comatched(1,:) = [];
-                    keyboard;
+                x = Sessions.Session1.UnitAttributes(RefUnits(i),1);
+                if ~isnan(Matches(1,1,i))
+                    y = Sessions.Session2.UnitAttributes(whichUnits(Matches(1,1,i)),1);
                 else
-                    unitOK(i) = 1;
+                    y = NaN;
                 end
+                MatchedUnits = vertcat(MatchedUnits, [x y]);
+            end
+        else
+            [C,ia,ic] = unique(squeeze(Matches(1,1,:)));
+            a_counts = accumarray(ic,1);
+            value_counts = [C, a_counts];
+            value_counts(isnan(value_counts(:,1)),:) = [];
+            
+            % work through the duplicates
+            while any(value_counts(:,2)>1)
+                comatched   = value_counts(find(value_counts(:,2)>1,1,'first'),1);
+                unit_idx    = find(Matches(1,1,:)==comatched); 
+                % simplest check - waveform similarity, ISI similarity, CGM
+                % similarity
+                [~,match(1)] = max(Matches(1,3,unit_idx));
+                [~,match(2)] = max(Matches(1,4,unit_idx));
+                [~,match(3)] = max(Matches(1,5,unit_idx));
+                
+                % clear winner
+                if numel(unique(match))==1
+                    unit_idx(match(1),:) = [];
+                    for j = 1:numel(unit_idx)
+                        % nullify the top-match
+                        Matches(1,1,unit_idx(j)) = NaN;
+                        Matches(:,:,unit_idx) = squeeze(circshift(Matches(:,:,unit_idx),-1,1));
+                    end
+                    [C,ia,ic] = unique(squeeze(Matches(1,1,:)));
+                    a_counts = accumarray(ic,1);
+                    value_counts = [C, a_counts];
+                    value_counts(isnan(value_counts(:,1)),:) = [];
+                else
+                    keyboard;
+                end
+                
+            end
+            
+            for i = 1:numel(RefUnits)
+                x = Sessions.Session1.UnitAttributes(RefUnits(i),1);
+                if ~isnan(Matches(1,1,i))
+                    y = Sessions.Session2.UnitAttributes(whichUnits(Matches(1,1,i)),1);
+                else
+                    y = NaN;
+                end
+                MatchedUnits = vertcat(MatchedUnits, [x y]);
             end
             
         end
+        
+        
     end
     
 end
