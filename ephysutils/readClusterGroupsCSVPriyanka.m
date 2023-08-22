@@ -38,6 +38,7 @@ while 1
         attributes = strsplit(fgetl(fid));
         i = i + 1;
     catch
+        fclose(fid);
         return;
     end
         
@@ -63,4 +64,3 @@ end
 % foo = textscan(fid,'%f %f %f %f %f %*[^\n]');
 % %wires = [cell2mat(foo(1)) cell2mat(foo(3))];
 % wires = [cell2mat(foo(1)) cell2mat(foo(3)) cell2mat(foo(2))]; % also read amplitude
-fclose(fid);

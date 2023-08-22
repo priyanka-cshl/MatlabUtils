@@ -58,10 +58,10 @@ for mycluster = 1:length(sp.cids) % for each cluster
     cluster(mycluster).quality = sp.cgs(mycluster);
     [fpRate, numViolations] = ISIViolations(allspikes, 1/30000, 0.002);
     cluster(mycluster).ISIquality = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')];
-    if mycluster == 1
-            cluster.spikescaling = sp.tempScalingAmps;
-            cluster.clusterscalingorder = sp.clu;
-    end
+%     if mycluster == 1
+%             cluster.spikescaling = sp.tempScalingAmps;
+%             cluster.clusterscalingorder = sp.clu;
+%     end
     
     if getwaveforms
         
@@ -171,5 +171,12 @@ for mycluster = 1:length(sp.cids) % for each cluster
 end
 
 disp(['found ',num2str(mycluster),' units']);
+
+% sort by tetrodes
+[~,sortorder] = sort(arrayfun(@(x) x.tetrode, cluster));
+cluster = cluster(sortorder);
+cluster(1).spikescaling = sp.tempScalingAmps;
+cluster(1).clusterscalingorder = sp.clu;
+
 
 end
