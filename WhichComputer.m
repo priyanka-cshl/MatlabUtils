@@ -4,6 +4,10 @@ function [Paths] = WhichComputer()
 [~,computername] = system('hostname');
 computername = deblank(computername);
 
+if contains(computername,'Marie')
+    computername = 'MarieMacCSHL';
+end 
+
 if contains(computername,'.cshl.edu') || contains(computername, 'priyanka-gupta')
     computername = 'MacLocal';
 end
@@ -64,14 +68,15 @@ switch computername
         Paths.Mapping.EphysSorted = 'Y:\pgupta\EphysData\odor_location\Sorted';
         Paths.Mapping.StimulusFile = 'Y:\pgupta\Behavior';
         Paths.Mapping.Processed = 'Y:\mdussauz\Smellocator\Processed\Mapping';
+   
     case 'MarieMacCSHL' %Marie laptop
-        Paths.Code                      = '/Users/Marie/Desktop/Analysis/Code'; % where all code files are
-        Paths.Grid.Behavior             = 'albeanu_nlsas_norepl_data/pgupta/Behavior'; % raw behavior, tuning mtalab files
-        Paths.Grid.Ephys{1}             = 'albeanu_nlsas_norepl_data/pgupta/EphysData'; % raw oeps files - for PCX batch
-        Paths.Grid.Ephys{2}             = 'albeanu_nlsas_norepl_data/mdussauz/ephysdata/lever_task/Batch'; % raw oeps files - for batch O,MO, J
-        Paths.Local.Ephys_processed     = '/Users/Marie/Desktop/Analysis/data/Smellocator/Processed/Ephys'; % local copy where sorted, curated spike data is stored
-        Paths.Grid.Ephys_processed      = 'albeanu_nlsas_norepl_data/mdussauz/Smellocator/Processed/Ephys'; % local copy where sorted, curated spike data is stored
-        Paths.Local.Behavior_processed  = '/Users/Marie/Desktop/Analysis/data/Smellocator/Processed/Behavior'; % local copy where sorted, curated spike data is stored
+        Paths.Code                      = '/Users/mariedussauze/Desktop/Analysis/Code'; % where all code files are
+        Paths.Grid.Behavior             = 'smb://grid-hs/albeanu_nlsas_norepl_data/pgupta/Behavior'; % raw behavior, tuning mtalab files
+        Paths.Grid.Ephys{1}             = 'smb://grid-hs/albeanu_nlsas_norepl_data/pgupta/EphysData'; % raw oeps files - for PCX batch
+        Paths.Grid.Ephys{2}             = 'smb://grid-hs/albeanu_nlsas_norepl_data/mdussauz/ephysdata/lever_task/Batch'; % raw oeps files - for batch O,MO, J
+        Paths.Local.Ephys_processed     = '/Users/mariedussauze/Desktop/Analysis/data/Smellocator/Processed/Ephys'; % local copy where sorted, curated spike data is stored
+        Paths.Grid.Ephys_processed      = 'smb://grid-hs/albeanu_nlsas_norepl_data/mdussauz/Smellocator/Processed/Ephys'; % local copy where sorted, curated spike data is stored
+        Paths.Local.Behavior_processed  = '/Users/mariedussauze/Desktop/Analysis/data/Smellocator/Processed/Behavior'; % local copy where sorted, curated spike data is stored
         Paths.Grid.Behavior_processed   = 'albeanu_nlsas_norepl_data/mdussauz/Smellocator/Processed/Behavior'; % local copy where sorted, curated spike data is stored
         Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
 end
