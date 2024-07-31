@@ -32,6 +32,9 @@ Paths.Mapping.EphysSorted = '/mnt/grid-hs/pgupta/EphysData/odor_location/Sorted'
 Paths.Mapping.StimulusFile = '/mnt/grid-hs/pgupta/Behavior';
 Paths.Mapping.Processed = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Mapping';
 
+% processed behavior data for Ryan
+Paths.Ryan.Behavior_processed = '/home/Priyanka/Dropbox/';
+
 switch computername
     case 'andaman'
         %Paths.Grid.Behavior      = '/mnt/data/BehaviorRaw'; % raw behavior, tuning mtalab files
@@ -52,6 +55,7 @@ switch computername
         Paths.Grid.Ephys{3}             = '/Users/Priyanka/Desktop/LABWORK_II/Data/Ephys';
         Paths.Local.Ephys_processed     = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator/Processed/Ephys';
         Paths.Grid.Ephys_processed      = Paths.Local.Ephys_processed;
+        Paths.Ryan.Behavior_processed   = '/Users/Priyanka/Desktop/LABWORK_II/Data/Smellocator';
     case 'DESKTOP-SBT7SLO' %Marie remote desktop
         Paths.Code                      = 'C:\Users\Marie\Documents\Code'; % where all code files are
         Paths.Grid.Behavior             = 'Y:\pgupta\Behavior'; % raw behavior, tuning mtalab files
