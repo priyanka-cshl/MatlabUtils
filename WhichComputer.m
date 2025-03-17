@@ -26,8 +26,8 @@ Paths.ProcessedSessions         = Paths.Grid.Behavior_processed;
 Paths.Widefield.Raw             = '/mnt/albeanu_lab/priyanka/Widefield';
 Paths.Widefield.Processed       = '/mnt/data/Widefield'; % local copy on Andaman
 Paths.CID.PhotonCerberStimFiles = '/mnt/grid-hs/mdussauz/PhotonCerber_Stimuli_on_server';
-Paths.CID.RawFiles              = '/mnt/grid-hs/mdussauz/PhotonCerber_Stimuli_on_server';
-Paths.CID.SortedFiles           = '/mnt/grid-hs/mdussauz/PhotonCerber_Stimuli_on_server';
+Paths.CID.RawFiles              = '/mnt/data/conc_id';
+Paths.CID.SortedFiles           = '/mnt/data/conc_id';
 Paths.CID.Processed             = '/mnt/grid-hs/mdussauz/CID/Processed';
 
 % LocationMapping Experiments done by Blom on AON mice
@@ -38,6 +38,7 @@ Paths.Mapping.Processed = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Mapping';
 
 % processed behavior data for Ryan
 Paths.Ryan.Behavior_processed = '/home/priyanka/Dropbox/';
+Paths.Wolf.processed = '/home/priyanka/Desktop/';
 
 switch computername
     case 'andaman'
