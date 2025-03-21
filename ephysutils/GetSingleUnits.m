@@ -10,6 +10,7 @@ addpath(genpath([Paths.Code,filesep,'spikes']));
 addpath(genpath([Paths.Code,filesep,'npy-matlab']));
 addpath(genpath([Paths.Code,filesep,'MatlabUtils']));
 
+nofuss = 0;
 if nargin<2
     getwaveforms = 0;
     savefigs = 0;
@@ -24,8 +25,12 @@ else
         case 2
             getwaveforms = 1;
             savefigs = 1;
+        case 3 % minimal
+            getwaveforms = 0;
+            savefigs = 0;
+            nofuss = 1;
         otherwise
-            error('Envalid input argument for options! Valid values: 0,1,2');
+            error('Envalid input argument for options! Valid values: 0,1,2,3');
     end
 end
 
@@ -53,15 +58,18 @@ for mycluster = 1:length(sp.cids) % for each cluster
     % Outputs
     cluster(mycluster).id = sp.cids(mycluster);
     cluster(mycluster).tetrode = tetrode;
-    cluster(mycluster).spikecount = numel(allspikes);
     cluster(mycluster).spikes = allspikes;
-    cluster(mycluster).quality = sp.cgs(mycluster);
-    [fpRate, numViolations] = ISIViolations(allspikes, 1/30000, 0.002);
-    cluster(mycluster).ISIquality = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')];
-%     if mycluster == 1
-%             cluster.spikescaling = sp.tempScalingAmps;
-%             cluster.clusterscalingorder = sp.clu;
-%     end
+
+    if ~nofuss
+        cluster(mycluster).spikecount = numel(allspikes);
+        cluster(mycluster).quality = sp.cgs(mycluster);
+        [fpRate, numViolations] = ISIViolations(allspikes, 1/30000, 0.002);
+        cluster(mycluster).ISIquality = [round(fpRate,2,'significant'), round(numViolations/(numel(allspikes)-1),2,'significant')];
+        %     if mycluster == 1
+        %             cluster.spikescaling = sp.tempScalingAmps;
+        %             cluster.clusterscalingorder = sp.clu;
+        %     end
+    end
     
     if getwaveforms
         
@@ -170,13 +178,15 @@ for mycluster = 1:length(sp.cids) % for each cluster
     
 end
 
-disp(['found ',num2str(mycluster),' units']);
-
 % sort by tetrodes
 [~,sortorder] = sort(arrayfun(@(x) x.tetrode, cluster));
 cluster = cluster(sortorder);
-cluster(1).spikescaling = sp.tempScalingAmps;
-cluster(1).clusterscalingorder = sp.clu;
 
+if ~nofuss
+    cluster(1).spikescaling = sp.tempScalingAmps;
+    cluster(1).clusterscalingorder = sp.clu;
+
+    disp(['found ',num2str(mycluster),' units']);
+end
 
 end
