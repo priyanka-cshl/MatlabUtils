@@ -19,7 +19,12 @@ if isempty(LineProps)
     LineProps = {'EdgeColor','none'};
 end
 
-x_values = [x fliplr(x)];
+if isempty(x)
+    x_values = [1:numel(y) fliplr(1:numel(y))];
+else
+    x_values = [x fliplr(x)];
+end
+
 y_values = [y+error fliplr(y-error)];
 
 % remove NaNs
