@@ -21,9 +21,12 @@ end
 
 if isempty(x)
     x_values = [1:numel(y) fliplr(1:numel(y))];
+    x = 1:numel(y);
 else
     x_values = [x fliplr(x)];
 end
+
+cout = Plot_Colors(whichcolor);
 
 y_values = [y+error fliplr(y-error)];
 
@@ -31,8 +34,8 @@ y_values = [y+error fliplr(y-error)];
 x_values(:,find(isnan(y_values))) = [];
 y_values(:,find(isnan(y_values))) = [];
 
-handle.errorbar = fill(x_values,y_values,whichcolor,LineProps{:},'FaceAlpha',MyAlpha);
+handle.errorbar = fill(x_values,y_values,cout,LineProps{:},'FaceAlpha',MyAlpha);
 hold on
-handle.mean = plot(x,y,'color',whichcolor);
+handle.mean = plot(x,y,'color',cout);
 end
 
