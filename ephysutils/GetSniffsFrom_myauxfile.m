@@ -3,11 +3,12 @@ function [SniffTS, RespirationData, AllSniffs] = GetSniffsFrom_myauxfile(myKsDir
 OEPSSamplingRate = 30000;
 
 % load info from SessionDetails.mat
-load(fullfile(myKsDir,'SessionDetails.mat'));
+load(fullfile(myKsDir,'SessionDetails.mat')); % loads Files
+SamplesPerChan = Files.Samples;
+VoltMultiplier = Files.AuxBitVolts;
 
 % get no. of channels etc from file size
 X = dir(fullfile(myKsDir,'myauxfile.dat'));
-SamplesPerChan = Files.Samples;
 Nchan       = floor(X.bytes/2/SamplesPerChan);
 
 offset = 0;
@@ -18,7 +19,6 @@ fclose(fid);
 
 %% process thermistor
 % convert to volts
-VoltMultiplier = Files.AuxBitVolts;
 %Therm_OEPS = double(MyData(3,:)')*VoltMultiplier;
 Therm_OEPS = double(MyData(3,:)')*(VoltMultiplier/2) + 2.5;
 
