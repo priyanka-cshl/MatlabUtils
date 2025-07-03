@@ -1,4 +1,12 @@
-function [SniffTS, RespirationData] = GetSniffsFromOEPSBinary(myDir)
+function [SniffTS, RespirationData] = GetSniffsFromOEPSBinary(myDir,thermistorCh)
+
+if nargin<2
+    thermistorCh = 3; % 3rd ADC channel
+    plotting = 0;
+else
+    plotting = 1;
+end
+thermistorCh = 8 - thermistorCh;
 
 addpath(genpath('/opt/open-ephys-matlab-tools')) % path to new open ephys data handling scripts
 OEPSSamplingRate = 30000;
@@ -12,8 +20,8 @@ Events = session.recordNodes{1}.recordings{1}.ttlEvents('Acquisition_Board-100.R
 
 % thermistor is on the 3rd ADC channels, there are 8 ADCs stacked at the
 % recording
-VoltMultiplier = session.recordNodes{1}.recordings{1}.info.continuous.channels(end-5).bit_volts;
-Therm_OEPS = session.recordNodes{1}.recordings{1}.continuous('Acquisition_Board-100.Rhythm Data').samples(end-5,:);
+VoltMultiplier = session.recordNodes{1}.recordings{1}.info.continuous.channels(end-thermistorCh).bit_volts;
+Therm_OEPS = session.recordNodes{1}.recordings{1}.continuous('Acquisition_Board-100.Rhythm Data').samples(end-thermistorCh,:);
 % convert to volts
 Therm_OEPS = double(Therm_OEPS')*VoltMultiplier;
 %Therm_OEPS = double(Therm_OEPS')*(VoltMultiplier/2) + 2.5;
@@ -27,6 +35,6 @@ RespirationData(:,1) = 0:1/SampleRate:max(timestamps);
 RespirationData(:,2) = interp1q(timestamps,Therm_OEPS,RespirationData(:,1)); % thermistor
 
 %% get sniff timestamps
-[SniffTS, RespirationData] = ProcessThermistorData(RespirationData);
+[SniffTS, RespirationData] = ProcessThermistorData(RespirationData,plotting);
 
 end
