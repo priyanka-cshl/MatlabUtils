@@ -4,8 +4,13 @@ OEPSSamplingRate = 30000;
 
 % load info from SessionDetails.mat
 load(fullfile(myKsDir,'SessionDetails.mat')); % loads Files
-SamplesPerChan = Files.Samples;
-VoltMultiplier = Files.AuxBitVolts;
+
+if size(Files.Samples,2) > 1
+    SamplesPerChan = sum(Files.Samples);
+else
+    SamplesPerChan = Files.Samples;
+end
+VoltMultiplier = Files.AuxBitVolts(1);
 
 % get no. of channels etc from file size
 X = dir(fullfile(myKsDir,'myauxfile.dat'));
@@ -14,7 +19,17 @@ Nchan       = floor(X.bytes/2/SamplesPerChan);
 offset = 0;
 fid = fopen(fullfile(myKsDir,'myauxfile.dat'),'r');
 fseek(fid, offset, 'bof');
-MyData = fread(fid, [Nchan SamplesPerChan], '*int16');
+if size(Files.Samples,2) > 1
+    MyData = fread(fid, [Nchan Files.Samples(1)], '*int16');
+    for nextfile = 2:size(Files.Samples,2)
+        MyData_temp = fread(fid, [Nchan Files.Samples(nextfile)], '*int16');
+        keyboard; % for channel remapping
+        % MyData_temp = circshift(MyData_temp,2,1);
+        MyData = [MyData MyData_temp];
+    end
+else
+    MyData = fread(fid, [Nchan SamplesPerChan], '*int16');
+end
 fclose(fid);
 
 %% process thermistor

@@ -79,6 +79,7 @@ else
     cids = unique(spikeTemplates);
     cgs = 3*ones(size(cids));
     channels = [];
+    amps = 0*cgs;
 end
     
 
