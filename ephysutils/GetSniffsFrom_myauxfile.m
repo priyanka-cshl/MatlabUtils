@@ -24,7 +24,7 @@ if size(Files.Samples,2) > 1
     for nextfile = 2:size(Files.Samples,2)
         MyData_temp = fread(fid, [Nchan Files.Samples(nextfile)], '*int16');
         keyboard; % for channel remapping
-        % MyData_temp = circshift(MyData_temp,2,1);
+        %MyData_temp = circshift(MyData_temp,2,1);
         MyData = [MyData MyData_temp];
     end
 else
@@ -36,6 +36,7 @@ fclose(fid);
 % convert to volts
 %Therm_OEPS = double(MyData(3,:)')*VoltMultiplier;
 Therm_OEPS = double(MyData(3,:)')*(VoltMultiplier/2) + 2.5;
+%MFS = double(MyData(1,:)')*(VoltMultiplier/2) + 2.5;
 
 clear MyData
 timestamps = (0:1:length(Therm_OEPS))'*(1/OEPSSamplingRate);
@@ -45,9 +46,10 @@ timestamps(end,:) = [];
 SampleRate = 500;
 RespirationData(:,1) = 0:1/SampleRate:max(timestamps);
 RespirationData(:,2) = interp1q(timestamps,Therm_OEPS,RespirationData(:,1)); % thermistor
+%RespirationData(:,4) = interp1q(timestamps,MFS,RespirationData(:,1)); % thermistor
 
 %% get sniff timestamps
-[SniffTS, RespirationData] = ProcessThermistorData(RespirationData);
+[SniffTS, ~, RespirationData] = ProcessThermistorData(RespirationData);
 
 % make a digital sniff trace
 TraceTS = RespirationData(:,1);
