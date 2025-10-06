@@ -38,7 +38,7 @@ Paths.Mapping.Processed = '/mnt/grid-hs/mdussauz/Smellocator/Processed/Mapping';
 
 % processed behavior data for Ryan
 Paths.Ryan.Behavior_processed = '/home/priyanka/Dropbox/';
-Paths.Wolf.processed = '/home/priyanka/Desktop/';
+Paths.Wolf.processed = '/mnt/data/'; %/home/priyanka/Desktop/';
 
 switch computername
     case 'andaman'
