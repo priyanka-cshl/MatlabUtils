@@ -45,6 +45,10 @@ switch computername
         %Paths.Grid.Behavior      = '/mnt/data/BehaviorRaw'; % raw behavior, tuning mtalab files
         %Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
         %Paths.Grid.Behavior_processed = '/mnt/data/Processed/Behavior';
+
+        Paths.CID.RawFiles              = '/mnt/data/cid_raw';
+        Paths.CID.SortedFiles           = '/mnt/data/cid_temp';
+        Paths.CID.Processed             = '/mnt/data/CID/Processed';
     case 'nicobar'
         Paths.Grid.Behavior      = '/mnt/data/BehaviorRaw'; % raw behavior, tuning mtalab files
         Paths.ProcessedSessions  = '/mnt/data/Processed/Behavior';
