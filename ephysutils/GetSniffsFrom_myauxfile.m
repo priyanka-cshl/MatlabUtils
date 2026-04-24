@@ -10,7 +10,11 @@ if size(Files.Samples,2) > 1
 else
     SamplesPerChan = Files.Samples;
 end
-VoltMultiplier = Files.AuxBitVolts(1);
+try
+    VoltMultiplier = Files.AuxBitVolts(1);
+catch 
+    VoltMultiplier = 1;
+end
 
 % get no. of channels etc from file size
 X = dir(fullfile(myKsDir,'myauxfile.dat'));
