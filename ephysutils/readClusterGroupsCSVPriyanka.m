@@ -67,7 +67,9 @@ if isfile(regexprep(filename,'_group','_info'))
     % %wires = [cell2mat(foo(1)) cell2mat(foo(3))];
     % wires = [cell2mat(foo(1)) cell2mat(foo(3)) cell2mat(foo(2))]; % also read amplitude
 else
-    cluster_info = make_cluster_info(ksDir);
+    fprintf('cluster_info.tsv not found - computing from Kilosort4 output\n');
+    cluster_info = make_cluster_info(fileparts(filename));
+    wires = table2array(cluster_info);
 
 end
 
