@@ -1,4 +1,7 @@
-function [SniffTS, RespirationData, AllSniffs] = GetSniffsFrom_myauxfile_smarter(myKsDir)
+function [SniffTS, RespirationData, AllSniffs] = GetSniffsFrom_myauxfile_smarter(myKsDir,auxchan)
+if nargin<2
+    auxchan = [];
+end
 
 OEPSSamplingRate = 30000;
 
@@ -13,7 +16,13 @@ end
 try
     VoltMultiplier = Files.AuxBitVolts(1);
 catch 
-    VoltMultiplier = 1;
+    try
+        getOEPSBitVolts(myKsDir);
+        load(fullfile(myKsDir,'SessionDetails.mat')); % loads Files
+        VoltMultiplier = Files.AuxBitVolts(1);
+    catch
+        VoltMultiplier = 1;
+    end
 end
 
 % get no. of channels etc from file size
@@ -37,20 +46,25 @@ end
 fclose(fid);
 
 %% process thermistor or MFS
-% auto-detect type of recording
-activeChans = find(median(MyData,2)>0);
-if numel(activeChans) > 1
-    % convert to volts
-    %Therm_OEPS = double(MyData(3,:)')*VoltMultiplier;
-    Therm_OEPS = double(MyData(3,:)')*(VoltMultiplier/2) + 2.5;
-    MFS = double(MyData(1,:)')*(VoltMultiplier/2) + 2.5;
-elseif activeChans == 1
-    % likely mfs recording
-    MFS = double(MyData(1,:)')*(VoltMultiplier/2) + 2.5;
-    Therm_OEPS = MFS*0;
-elseif activeChans == 3
-    % likely thermistor recording
-    Therm_OEPS = double(MyData(3,:)')*(VoltMultiplier/2) + 2.5;
+if isempty(auxchan)
+    % auto-detect type of recording
+    activeChans = find(median(MyData,2)>0);
+    if numel(activeChans) > 1
+        % convert to volts
+        %Therm_OEPS = double(MyData(3,:)')*VoltMultiplier;
+        Therm_OEPS = double(MyData(3,:)')*(VoltMultiplier/2) + 2.5;
+        MFS = double(MyData(1,:)')*(VoltMultiplier/2) + 2.5;
+    elseif activeChans == 1
+        % likely mfs recording
+        MFS = double(MyData(1,:)')*(VoltMultiplier/2) + 2.5;
+        Therm_OEPS = MFS*0;
+    elseif activeChans == 3
+        % likely thermistor recording
+        Therm_OEPS = double(MyData(3,:)')*(VoltMultiplier/2) + 2.5;
+        MFS = Therm_OEPS*0;
+    end
+else
+    Therm_OEPS = double(MyData(auxchan,:)')*(VoltMultiplier/2) + 2.5;
     MFS = Therm_OEPS*0;
 end
 
