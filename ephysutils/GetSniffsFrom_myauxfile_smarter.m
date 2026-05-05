@@ -90,9 +90,11 @@ if any(Therm_OEPS)
     TraceTS = RespirationData(:,1);
     DigitalSniffs = TraceTS*0;
     for n = 1:size(SniffTS,1)
-        idx(1) = find(TraceTS>=SniffTS(n,1),1,'first');
-        idx(2) = find(TraceTS> SniffTS(n,2),1,'first') - 1;
-        DigitalSniffs(idx(1):idx(2)) = 1;
+        if ~any(isnan(SniffTS(n,1:2)))
+            idx(1) = find(TraceTS>=SniffTS(n,1),1,'first');
+            idx(2) = find(TraceTS> SniffTS(n,2),1,'first') - 1;
+            DigitalSniffs(idx(1):idx(2)) = 1;
+        end
     end
 
     %% make the equivalet of AllSniffs as in LeverTaskAnalysis (GetAllSniffs.m)
