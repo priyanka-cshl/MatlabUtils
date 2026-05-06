@@ -24,43 +24,52 @@ cgs(isMUA) = 1;
 cgs(isGood) = 2;
 cgs(isUns) = 3;
 
-% also read which wire it was strongest on
-fid = fopen(regexprep(filename,'_group','_info'));
 
-% N = 8;
-% N = numel(regexp(headers,'\t'))+1; % no. of columns
-headers = strsplit(fgetl(fid));
-% foo = strsplit(headers);
-% token = [repmat('%f ',1,numel(foo)),'%*[^\n]'];
-i = 0;
-while 1
-    try
-        attributes = strsplit(fgetl(fid));
-        i = i + 1;
-    catch
-        fclose(fid);
-        return;
+if isfile(regexprep(filename,'_group','_info'))
+    % also read which wire it was strongest on
+    fid = fopen(regexprep(filename,'_group','_info'));
+
+    % N = 8;
+    % N = numel(regexp(headers,'\t'))+1; % no. of columns
+    headers = strsplit(fgetl(fid));
+    % foo = strsplit(headers);
+    % token = [repmat('%f ',1,numel(foo)),'%*[^\n]'];
+    i = 0;
+    while 1
+        try
+            attributes = strsplit(fgetl(fid));
+            i = i + 1;
+        catch
+            fclose(fid);
+            return;
+        end
+
+        wires(i,1:4) = [str2double(attributes{find(cellfun(@(x) strcmp(x,'cluster_id'), headers))}) ...
+            str2double(attributes{find(cellfun(@(x) strcmp(x,'ch'), headers))}) ...
+            str2double(attributes{find(cellfun(@(x) strcmp(x,'amp'), headers))}) ...
+            str2double(attributes{find(cellfun(@(x) strcmp(x,'fr'), headers))}) ];
+        wires(i,5:7) = NaN;
+        % append extra info if it exists
+        if ~isempty(find(cellfun(@(x) strcmp(x,'fractionRPV'), headers)))
+            wires(i,5) = str2double(attributes{find(cellfun(@(x) strcmp(x,'fractionRPV'), headers))});
+        end
+        if ~isempty(find(cellfun(@(x) strcmp(x,'ISIViolations'), headers)))
+            wires(i,6) = str2double(attributes{find(cellfun(@(x) strcmp(x,'ISIViolations'), headers))});
+        end
+        if ~isempty(find(cellfun(@(x) strcmp(x,'n_spikes'), headers)))
+            wires(i,7) = str2double(attributes{find(cellfun(@(x) strcmp(x,'n_spikes'), headers))});
+        end
     end
-        
-    wires(i,1:4) = [str2double(attributes{find(cellfun(@(x) strcmp(x,'cluster_id'), headers))}) ...
-        str2double(attributes{find(cellfun(@(x) strcmp(x,'ch'), headers))}) ...
-        str2double(attributes{find(cellfun(@(x) strcmp(x,'amp'), headers))}) ...
-        str2double(attributes{find(cellfun(@(x) strcmp(x,'fr'), headers))}) ];
-    wires(i,5:7) = NaN;
-    % append extra info if it exists
-    if ~isempty(find(cellfun(@(x) strcmp(x,'fractionRPV'), headers)))
-        wires(i,5) = str2double(attributes{find(cellfun(@(x) strcmp(x,'fractionRPV'), headers))});
-    end
-    if ~isempty(find(cellfun(@(x) strcmp(x,'ISIViolations'), headers)))
-        wires(i,6) = str2double(attributes{find(cellfun(@(x) strcmp(x,'ISIViolations'), headers))});
-    end
-    if ~isempty(find(cellfun(@(x) strcmp(x,'n_spikes'), headers)))
-        wires(i,7) = str2double(attributes{find(cellfun(@(x) strcmp(x,'n_spikes'), headers))});
-    end
+    % %formatSpec = '%s';
+    % %headers = textscan(fid,formatSpec,N);
+    %
+    % foo = textscan(fid,'%f %f %f %f %f %*[^\n]');
+    % %wires = [cell2mat(foo(1)) cell2mat(foo(3))];
+    % wires = [cell2mat(foo(1)) cell2mat(foo(3)) cell2mat(foo(2))]; % also read amplitude
+else
+    fprintf('cluster_info.tsv not found - computing from Kilosort4 output\n');
+    cluster_info = make_cluster_info(fileparts(filename));
+    wires = table2array(cluster_info);
+
 end
-% %formatSpec = '%s';
-% %headers = textscan(fid,formatSpec,N);
-% 
-% foo = textscan(fid,'%f %f %f %f %f %*[^\n]');
-% %wires = [cell2mat(foo(1)) cell2mat(foo(3))];
-% wires = [cell2mat(foo(1)) cell2mat(foo(3)) cell2mat(foo(2))]; % also read amplitude
+
