@@ -23,7 +23,15 @@ if ~isempty(dir(fullfile(Files.name,'*_ADC*')))
     end
     save(fullfile(myKsDir,'SessionDetails.mat'),'Files','-append');
 else
-    keyboard;
+    try 
+        load(fullfile(myKsDir,'SessionDetails.mat'),'Files');
+        if isfield(Files,'AllSettings')
+            Files.AuxBitVolts(1) = mean(Files.AllSettings.RecordingInfo.auxBitVolts);
+            save(fullfile(myKsDir,'SessionDetails.mat'),'Files','-append');
+        end
+    catch
+        keyboard;
+    end
 end
 
 end
