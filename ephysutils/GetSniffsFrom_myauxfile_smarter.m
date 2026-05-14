@@ -46,9 +46,16 @@ end
 fclose(fid);
 
 %% process thermistor or MFS
+activeChans = find(median(MyData(:,1:10*OEPSSamplingRate),2)>0);
+if ~isequal(auxchan,activeChans)
+    keyboard;
+    % auxchan = [];
+else
+    auxchan = [];
+end
+
 if isempty(auxchan)
     % auto-detect type of recording
-    activeChans = find(median(MyData,2)>0);
     if numel(activeChans) > 1
         % convert to volts
         %Therm_OEPS = double(MyData(3,:)')*VoltMultiplier;
