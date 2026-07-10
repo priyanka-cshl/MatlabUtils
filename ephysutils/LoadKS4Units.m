@@ -4,19 +4,23 @@ narginchk(1,inf)
 params = inputParser;
 params.CaseSensitive = false;
 params.addParameter('minSpikes', 0, @(x) isnumeric(x)); % in counts
+params.addParameter('allUnits', 0, @(x) isnumeric(x)); % default is load only good units
+
 
 % extract values from the inputParser
 params.parse(varargin{:});
 minRate = params.Results.minSpikes; % in sec
+allUnits = (params.Results.allUnits == 1);
 
 %% load KS4 units
 load(fullfile(myKsDir,'quickprocesssniffs.mat')); % sniff times, KS4Units
 if exist('KS4Units') %&& isempty(dir(fullfile(myKsDir,'kilosort4','cluster_info*')))
     myUnits = [[KS4Units.id]' [KS4Units.tetrode]' [KS4Units.quality]' [KS4Units.spikecount]'];
     myUnits(:,end+1) = 1:size(myUnits,1);
-    % session wasn't curated in phy, keep only 'good' units
-    myUnits(find(myUnits(:,3)~=2),:) = [];
-
+    if ~allUnits
+        % session wasn't curated in phy, keep only 'good' units
+        myUnits(find(myUnits(:,3)~=2),:) = [];
+    end
     disp(['found ',num2str(size(myUnits,1)),' good units']);
     SingleUnits = KS4Units(myUnits(:,end));
     
